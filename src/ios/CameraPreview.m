@@ -205,14 +205,16 @@
             CGFloat aspectHeight = capturedImage.size.height / maxHeight;
             CGFloat aspectRatio = MAX ( aspectWidth, aspectHeight );
 
+            capturedImage = [UIImage imageWithCGImage:capturedImage.CGImage scale:1.0f orientation:UIImageOrientationLeft];
+
             CGSize destinationSize = CGSizeMake((capturedImage.size.width / aspectRatio), (capturedImage.size.height / aspectRatio));
 
             UIGraphicsBeginImageContext(destinationSize);
-            [capturedImage drawInRect:CGRectMake(0,0,destinationSize.width,destinationSize.height)];
-            UIImage *newCapturedImage = UIGraphicsGetImageFromCurrentImageContext();
+              [capturedImage drawInRect:CGRectMake(0, 0, destinationSize.width, destinationSize.height)];
+              capturedImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
 
-            NSString *originalPicture = [NSString stringWithFormat:@"data:image/jpeg;base64,%@", [UIImageJPEGRepresentation(newCapturedImage, 0.75f) base64EncodedStringWithOptions:0]];
+            NSString *originalPicture = [NSString stringWithFormat:@"data:image/jpeg;base64,%@", [UIImageJPEGRepresentation(capturedImage, 0.75f) base64EncodedStringWithOptions:0]];
 
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:originalPicture];
             [pluginResult setKeepCallbackAsBool:true];

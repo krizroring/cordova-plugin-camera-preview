@@ -79,6 +79,8 @@ public class CameraActivity extends Fragment {
   public boolean tapToTakePicture;
   public boolean dragEnabled;
 
+  public double maxWidth;
+  public double maxHeight;
   public int width;
   public int height;
   public int x;
@@ -377,6 +379,9 @@ public class CameraActivity extends Fragment {
   }
 
   public void takePicture(final double maxWidth, final double maxHeight){
+    this.maxWidth = maxWidth;
+    this.maxHeight = maxHeight;
+
     if(mPreview != null) {
 
       if(!canTakePicture)
@@ -404,7 +409,7 @@ public class CameraActivity extends Fragment {
         matrix.preScale(-1.0f, 1.0f);
       }
 
-      matrix.postRotate(mPreview.getDisplayOrientation());
+      matrix.postRotate(0);
 
       try
       {
@@ -412,9 +417,21 @@ public class CameraActivity extends Fragment {
 
         // scale it to fit the view
         final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
-        float scale = (float) pictureView.getWidth() / (float) picture.getWidth();
-        picture = Bitmap.createScaledBitmap(picture, (int) (picture.getWidth() * scale), (int) (picture.getHeight() * scale), false);
 
+        int width = 0;
+        int height = 0;
+        if (picture.getWidth() > picture.getHeight() && picture.getWidth() > maxWidth) {
+            width = (int) maxWidth;
+            height = (int) (picture.getHeight() / (picture.getWidth() / maxWidth));
+        } else if (picture.getHeight() > picture.getWidth() && picture.getHeight() > maxHeight) {
+            width = (int) (picture.getHeight() / (picture.getHeight() / maxHeight));
+            height = (int) maxHeight;
+        } else {
+            width = (int) picture.getWidth();
+            height = (int) picture.getHeight();
+        }
+
+        picture = Bitmap.createScaledBitmap(picture, width, height, false);
       }
       catch (OutOfMemoryError oom)
       {
@@ -427,82 +444,12 @@ public class CameraActivity extends Fragment {
       picture.compress(Bitmap.CompressFormat.JPEG, 85, byteArrayOutputStream);
       byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-      String encodedImage = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+      String encodedImage = "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP);
 
       eventListener.onPictureTaken(encodedImage);
       canTakePicture = true;
     }
   };
-
-  private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture){
-
-    final FrameLayout cameraLoader = (FrameLayout)view.findViewById(getResources().getIdentifier("camera_loader", "id", appResourcesPackage));
-    cameraLoader.setVisibility(View.VISIBLE);
-    final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
-    new Thread() {
-      public void run() {
-
-        try {
-          final File picFile = storeImage(picture, "_preview");
-          final File originalPictureFile = storeImage(originalPicture, "_original");
-
-          eventListener.onPictureTaken(originalPictureFile.getAbsolutePath());
-
-          getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              cameraLoader.setVisibility(View.INVISIBLE);
-              pictureView.setImageBitmap(null);
-            }
-          });
-        }
-        catch(Exception e){
-          //An unexpected error occurred while saving the picture.
-          getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              cameraLoader.setVisibility(View.INVISIBLE);
-              pictureView.setImageBitmap(null);
-            }
-          });
-        }
-      }
-    }.start();
-  }
-
-  private File getOutputMediaFile(String suffix){
-
-    File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
-    /*if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
-      mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
-      }*/
-    if (! mediaStorageDir.exists()){
-      if (! mediaStorageDir.mkdirs()){
-        return null;
-      }
-    }
-    // Create a media file name
-    String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm_ss").format(new Date());
-    File mediaFile;
-    String mImageName = "camerapreview_" + timeStamp + suffix + ".jpg";
-    mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
-    return mediaFile;
-  }
-
-  private File storeImage(Bitmap image, String suffix) {
-    File pictureFile = getOutputMediaFile(suffix);
-    if (pictureFile != null) {
-      try {
-        FileOutputStream fos = new FileOutputStream(pictureFile);
-        image.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-        fos.close();
-        return pictureFile;
-      }
-      catch (Exception ex) {
-      }
-    }
-    return null;
-  }
 
   public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
     // Raw height and width of image

@@ -52,6 +52,11 @@ public class CameraActivity extends Fragment {
   private static final int FLASH_ON = 1;
   private static final int FLASH_AUTO = 2;
 
+  private static final int ROTATION_TOP = 0;
+  private static final int ROTATION_RIGHT = 0;
+  private static final int ROTATION_BOTTOM = 0;
+  private static final int ROTATION_LEFT = 0;
+
   public int currentFlashMode = 2;
 
   private static final int FOCUS_AUTO = 0;
@@ -151,7 +156,7 @@ public class CameraActivity extends Fragment {
               boolean isSingleTapTouch = gestureDetector.onTouchEvent(event);
               if (event.getAction() != MotionEvent.ACTION_MOVE && isSingleTapTouch) {
                 if (tapToTakePicture) {
-                  takePicture(0, 0);
+                  takePicture(0, 0, 0);
                 }
                 return true;
               }
@@ -378,7 +383,7 @@ public class CameraActivity extends Fragment {
     return ret;
   }
 
-  public void takePicture(final double maxWidth, final double maxHeight){
+  public void takePicture(final int rotation, final double maxWidth, final double maxHeight){
     this.maxWidth = maxWidth;
     this.maxHeight = maxHeight;
 
@@ -409,7 +414,15 @@ public class CameraActivity extends Fragment {
         matrix.preScale(-1.0f, 1.0f);
       }
 
-      matrix.postRotate(180);
+      if (rotation == 0) {
+          matrix.postRotate(0);
+      } else if (rotation == 1) {
+          matrix.postRotate(90);
+      } else if (rotation == 2) {
+          matrix.postRotate(180);
+      } else if (rotation == 3) {
+          matrix.postRotate(270);
+      }
 
       try
       {

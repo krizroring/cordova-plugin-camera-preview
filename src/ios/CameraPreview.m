@@ -208,14 +208,15 @@
 
             UIImageOrientation orientationEnum;
 
-            if (orientation == 0)
-                orientationEnum = UIImageOrientationLeft;
-            else if (orientation == 1)
-                orientationEnum = UIImageOrientationDown;
-            else if (orientation == 2)
-                orientationEnum = UIImageOrientationRight;
-            else if (orientation == 3)
-                orientationEnum = UIImageOrientationUp;
+              if (orientation == 0) {
+                  orientationEnum = UIImageOrientationLeft;
+              } else if (orientation == 1) {
+                  orientationEnum = UIImageOrientationDown;
+              } else if (orientation == 2) {
+                  orientationEnum = UIImageOrientationRight;
+              } else {
+                  orientationEnum = UIImageOrientationUp;
+              }
 
             capturedImage = [UIImage imageWithCGImage:capturedImage.CGImage scale:1.0f orientation:orientationEnum];
 

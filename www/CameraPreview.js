@@ -57,7 +57,7 @@ CameraPreview.stopCamera = function(){
 
 CameraPreview.takePicture = function(dim){
   dim = dim || {};
-  exec(null, null, PLUGIN_NAME, "takePicture", [dim.maxWidth || 0, dim.maxHeight || 0]);
+  exec(null, null, PLUGIN_NAME, "takePicture", [dim.orientation || 0, dim.maxWidth || 0, dim.maxHeight || 0]);
 };
 
 CameraPreview.setColorEffect = function(effect){
@@ -81,5 +81,6 @@ CameraPreview.disable = function(disable){
 };
 
 CameraPreview.FlashMode = {OFF: 0, ON: 1, AUTO: 2};
+CameraPreview.Orientation = {UP: 3, LEFT: 0, DOWN: 1, RIGHT:2};
 
 module.exports = CameraPreview;

@@ -16,7 +16,7 @@
 - (void) takePicture:(CDVInvokedUrlCommand*)command;
 - (void) setOnPictureTakenHandler:(CDVInvokedUrlCommand*)command;
 
-- (void) invokeTakePicture:(CGFloat) maxWidth withHeight:(CGFloat) maxHeight;
+- (void) invokeTakePicture:(CGFloat) orientation withWidth:(CGFloat) maxWidth withHeight:(CGFloat) maxHeight;
 - (void) invokeTakePicture;
 
 @property (nonatomic) CameraSessionManager *sessionManager;

@@ -169,9 +169,10 @@
   CDVPluginResult *pluginResult;
 
   if (self.cameraRenderController != NULL) {
-    CGFloat maxW = (CGFloat)[command.arguments[0] floatValue];
-    CGFloat maxH = (CGFloat)[command.arguments[1] floatValue];
-    [self invokeTakePicture:maxW withHeight:maxH];
+    CGFloat orient = (CGFloat)[command.arguments[0] floatValue];
+    CGFloat maxW = (CGFloat)[command.arguments[1] floatValue];
+    CGFloat maxH = (CGFloat)[command.arguments[2] floatValue];
+      [self invokeTakePicture:orient withWidth:maxW withHeight:maxH];
   } else {
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Camera not started"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -184,10 +185,10 @@
 }
 
 - (void) invokeTakePicture {
-  [self invokeTakePicture:0.0 withHeight:0.0];
+    [self invokeTakePicture:0.0 withWidth:0.0 withHeight:0.0];
 }
 
-- (void) invokeTakePicture:(CGFloat) maxWidth withHeight:(CGFloat) maxHeight {
+- (void) invokeTakePicture:(CGFloat) orientation withWidth:(CGFloat) maxWidth withHeight:(CGFloat) maxHeight {
         AVCaptureConnection *connection = [self.sessionManager.stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
         [self.sessionManager.stillImageOutput captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef sampleBuffer, NSError *error) {
 
@@ -205,7 +206,18 @@
             CGFloat aspectHeight = capturedImage.size.height / maxHeight;
             CGFloat aspectRatio = MAX ( aspectWidth, aspectHeight );
 
-            capturedImage = [UIImage imageWithCGImage:capturedImage.CGImage scale:1.0f orientation:UIImageOrientationLeft];
+            UIImageOrientation orientationEnum;
+
+            if (orientation == 0)
+                orientationEnum = UIImageOrientationLeft;
+            else if (orientation == 1)
+                orientationEnum = UIImageOrientationDown;
+            else if (orientation == 2)
+                orientationEnum = UIImageOrientationRight;
+            else if (orientation == 3)
+                orientationEnum = UIImageOrientationUp;
+
+            capturedImage = [UIImage imageWithCGImage:capturedImage.CGImage scale:1.0f orientation:orientationEnum];
 
             CGSize destinationSize = CGSizeMake((capturedImage.size.width / aspectRatio), (capturedImage.size.height / aspectRatio));
 

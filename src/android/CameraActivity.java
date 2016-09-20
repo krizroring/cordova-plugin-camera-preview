@@ -409,7 +409,7 @@ public class CameraActivity extends Fragment {
         matrix.preScale(-1.0f, 1.0f);
       }
 
-      matrix.postRotate(0);
+      matrix.postRotate(180);
 
       try
       {

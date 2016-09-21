@@ -84,6 +84,7 @@ public class CameraActivity extends Fragment {
   public boolean tapToTakePicture;
   public boolean dragEnabled;
 
+  public int rotation;
   public double maxWidth;
   public double maxHeight;
   public int width;
@@ -384,6 +385,7 @@ public class CameraActivity extends Fragment {
   }
 
   public void takePicture(final int rotation, final double maxWidth, final double maxHeight){
+    this.rotation = rotation;
     this.maxWidth = maxWidth;
     this.maxHeight = maxHeight;
 
@@ -417,11 +419,11 @@ public class CameraActivity extends Fragment {
       if (rotation == 0) {
           matrix.postRotate(0);
       } else if (rotation == 1) {
-          matrix.postRotate(90);
+          matrix.postRotate(270);
       } else if (rotation == 2) {
           matrix.postRotate(180);
       } else if (rotation == 3) {
-          matrix.postRotate(270);
+          matrix.postRotate(90);
       }
 
       try
@@ -433,10 +435,11 @@ public class CameraActivity extends Fragment {
 
         int width = 0;
         int height = 0;
+
         if (picture.getWidth() > picture.getHeight() && picture.getWidth() > maxWidth) {
             width = (int) maxWidth;
             height = (int) (picture.getHeight() / (picture.getWidth() / maxWidth));
-        } else if (picture.getHeight() > picture.getWidth() && picture.getHeight() > maxHeight) {
+        } else if (picture.getWidth() > picture.getHeight() && picture.getHeight() > maxHeight) {
             width = (int) (picture.getHeight() / (picture.getHeight() / maxHeight));
             height = (int) maxHeight;
         } else {

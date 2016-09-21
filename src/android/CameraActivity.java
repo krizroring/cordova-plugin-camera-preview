@@ -53,9 +53,9 @@ public class CameraActivity extends Fragment {
   private static final int FLASH_AUTO = 2;
 
   private static final int ROTATION_TOP = 0;
-  private static final int ROTATION_RIGHT = 0;
-  private static final int ROTATION_BOTTOM = 0;
-  private static final int ROTATION_LEFT = 0;
+  private static final int ROTATION_LEFT = 1;
+  private static final int ROTATION_BOTTOM = 2;
+  private static final int ROTATION_RIGHT = 3;
 
   public int currentFlashMode = 2;
 
@@ -416,14 +416,14 @@ public class CameraActivity extends Fragment {
         matrix.preScale(-1.0f, 1.0f);
       }
 
-      if (rotation == 0) {
+      if (rotation == ROTATION_TOP) {
           matrix.postRotate(0);
-      } else if (rotation == 1) {
-          matrix.postRotate(270);
-      } else if (rotation == 2) {
-          matrix.postRotate(180);
-      } else if (rotation == 3) {
+      } else if (rotation == ROTATION_LEFT) {
           matrix.postRotate(90);
+      } else if (rotation == ROTATION_RIGHT) {
+          matrix.postRotate(270);
+      } else if (rotation == ROTATION_BOTTOM) {
+          matrix.postRotate(180);
       }
 
       try

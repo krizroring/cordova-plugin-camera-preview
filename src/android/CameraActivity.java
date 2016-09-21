@@ -439,7 +439,7 @@ public class CameraActivity extends Fragment {
         if (picture.getWidth() > picture.getHeight() && picture.getWidth() > maxWidth) {
             width = (int) maxWidth;
             height = (int) (picture.getHeight() / (picture.getWidth() / maxWidth));
-        } else if (picture.getWidth() > picture.getHeight() && picture.getHeight() > maxHeight) {
+        } else if (picture.getHeight() > picture.getWidth() && picture.getHeight() > maxHeight) {
             width = (int) (picture.getHeight() / (picture.getHeight() / maxHeight));
             height = (int) maxHeight;
         } else {

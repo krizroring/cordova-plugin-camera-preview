@@ -52,6 +52,11 @@ public class CameraActivity extends Fragment {
   private static final int FLASH_ON = 1;
   private static final int FLASH_AUTO = 2;
 
+  private static final int ROTATION_TOP = 0;
+  private static final int ROTATION_LEFT = 1;
+  private static final int ROTATION_BOTTOM = 2;
+  private static final int ROTATION_RIGHT = 3;
+
   public int currentFlashMode = 2;
 
   private static final int FOCUS_AUTO = 0;
@@ -79,6 +84,7 @@ public class CameraActivity extends Fragment {
   public boolean tapToTakePicture;
   public boolean dragEnabled;
 
+  public int rotation;
   public double maxWidth;
   public double maxHeight;
   public int width;
@@ -151,7 +157,7 @@ public class CameraActivity extends Fragment {
               boolean isSingleTapTouch = gestureDetector.onTouchEvent(event);
               if (event.getAction() != MotionEvent.ACTION_MOVE && isSingleTapTouch) {
                 if (tapToTakePicture) {
-                  takePicture(0, 0);
+                  takePicture(0, 0, 0);
                 }
                 return true;
               }
@@ -378,7 +384,8 @@ public class CameraActivity extends Fragment {
     return ret;
   }
 
-  public void takePicture(final double maxWidth, final double maxHeight){
+  public void takePicture(final int rotation, final double maxWidth, final double maxHeight){
+    this.rotation = rotation;
     this.maxWidth = maxWidth;
     this.maxHeight = maxHeight;
 
@@ -409,7 +416,15 @@ public class CameraActivity extends Fragment {
         matrix.preScale(-1.0f, 1.0f);
       }
 
-      matrix.postRotate(180);
+      if (rotation == ROTATION_TOP) {
+          matrix.postRotate(0);
+      } else if (rotation == ROTATION_LEFT) {
+          matrix.postRotate(90);
+      } else if (rotation == ROTATION_RIGHT) {
+          matrix.postRotate(270);
+      } else if (rotation == ROTATION_BOTTOM) {
+          matrix.postRotate(180);
+      }
 
       try
       {
@@ -420,6 +435,7 @@ public class CameraActivity extends Fragment {
 
         int width = 0;
         int height = 0;
+
         if (picture.getWidth() > picture.getHeight() && picture.getWidth() > maxWidth) {
             width = (int) maxWidth;
             height = (int) (picture.getHeight() / (picture.getWidth() / maxWidth));

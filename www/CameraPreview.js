@@ -51,8 +51,8 @@ CameraPreview.startCamera = function(options){
   exec(null, null, PLUGIN_NAME, "startCamera", [options.x, options.y, options.width, options.height, options.camera, options.tapPhoto, options.previewDrag, options.toBack, options.alpha]);
 };
 
-CameraPreview.stopCamera = function(){
-  exec(null, null, PLUGIN_NAME, "stopCamera", []);
+CameraPreview.stopCamera = function(onCameraStopped){
+  exec(onCameraStopped, onCameraStopped, PLUGIN_NAME, "stopCamera", []);
 };
 
 CameraPreview.takePicture = function(dim){

@@ -231,6 +231,8 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     fragmentTransaction.commit();
     fragment = null;
 
+    callbackContext.success();
+
     return true;
   }
 

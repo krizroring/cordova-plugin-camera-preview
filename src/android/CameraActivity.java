@@ -419,9 +419,9 @@ public class CameraActivity extends Fragment {
       if (rotation == ROTATION_TOP) {
           matrix.postRotate(0);
       } else if (rotation == ROTATION_LEFT) {
-          matrix.postRotate(90);
-      } else if (rotation == ROTATION_RIGHT) {
           matrix.postRotate(270);
+      } else if (rotation == ROTATION_RIGHT) {
+          matrix.postRotate(90);
       } else if (rotation == ROTATION_BOTTOM) {
           matrix.postRotate(180);
       }

@@ -433,19 +433,12 @@ public class CameraActivity extends Fragment {
         // scale it to fit the view
         final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
 
-        int width = 0;
-        int height = 0;
+        double widthScaleFactor = picture.getWidth() / maxWidth;
+        double heightScaleFactor = picture.getHeight() / maxHeight;
+        double smallestScale = Math.min(widthScaleFactor, heightScaleFactor);
 
-        if (picture.getWidth() > picture.getHeight() && picture.getWidth() > maxWidth) {
-            width = (int) maxWidth;
-            height = (int) (picture.getHeight() / (picture.getWidth() / maxWidth));
-        } else if (picture.getHeight() > picture.getWidth() && picture.getHeight() > maxHeight) {
-            width = (int) (picture.getHeight() / (picture.getHeight() / maxHeight));
-            height = (int) maxHeight;
-        } else {
-            width = (int) picture.getWidth();
-            height = (int) picture.getHeight();
-        }
+        int width = (int) (picture.getWidth() / smallestScale);
+        int height = (int) (picture.getHeight() / smallestScale);
 
         picture = Bitmap.createScaledBitmap(picture, width, height, false);
       }

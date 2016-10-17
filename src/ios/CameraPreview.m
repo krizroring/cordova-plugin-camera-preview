@@ -204,7 +204,7 @@
 
             CGFloat aspectWidth = capturedImage.size.width / maxWidth;
             CGFloat aspectHeight = capturedImage.size.height / maxHeight;
-            CGFloat aspectRatio = MAX ( aspectWidth, aspectHeight );
+            CGFloat aspectRatio = MIN ( aspectWidth, aspectHeight );
 
             UIImageOrientation orientationEnum;
 
